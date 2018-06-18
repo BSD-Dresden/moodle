@@ -73,11 +73,16 @@ class login_signup_form extends moodleform implements renderable, templatable {
             $mform->addRule($field, get_string($stringid), 'required', null, 'client');
         }
 
-        $mform->addElement('text', 'city', get_string('city'), 'maxlength="120" size="20"');
+        //Angabe Telefonnr.
+        $mform->addElement('text', 'phone1', get_string('phone1'), 'maxlength="20" size="25"');
+        $mform->setType('phone1', core_user::get_property_type('phone1'));
+		$mform->addRule('phone1', get_string('filemissing', 'moodle', get_string('phone1')), 'required', null, 'client');
+        $mform->setForceLtr('phone1');
+		
+		
+		$mform->addElement('text', 'city', get_string('city'), 'maxlength="120" size="20"');
         $mform->setType('city', core_user::get_property_type('city'));
-        if (!empty($CFG->defaultcity)) {
-            $mform->setDefault('city', $CFG->defaultcity);
-        }
+		$mform->addRule('city', get_string('filemissing', 'moodle', get_string('city')), 'required', null, 'client');
 
         $country = get_string_manager()->get_list_of_countries();
         $default_country[''] = get_string('selectacountry');
