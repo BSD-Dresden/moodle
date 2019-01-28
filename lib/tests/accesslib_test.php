@@ -2335,6 +2335,40 @@ class core_accesslib_testcase extends advanced_testcase {
 
     }
 
+    /**
+     * Test that enrolled users SQL does not return any values for users
+     * without a group when $context is not a valid course context.
+     */
+    public function test_get_enrolled_sql_userswithoutgroup() {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $systemcontext = context_system::instance();
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = context_course::instance($course->id);
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+
+        $this->getDataGenerator()->enrol_user($user1->id, $course->id);
+        $this->getDataGenerator()->enrol_user($user2->id, $course->id);
+
+        $group = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
+        groups_add_member($group, $user1);
+
+        $enrolled   = get_enrolled_users($coursecontext);
+        $this->assertCount(2, $enrolled);
+
+        // Get users without any group on the course context.
+        $enrolledwithoutgroup = get_enrolled_users($coursecontext, '', USERSWITHOUTGROUP);
+        $this->assertCount(1, $enrolledwithoutgroup);
+        $this->assertFalse(isset($enrolledwithoutgroup[$user1->id]));
+
+        // Get users without any group on the system context (it should throw an exception).
+        $this->expectException('coding_exception');
+        get_enrolled_users($systemcontext, '', USERSWITHOUTGROUP);
+    }
+
     public function get_enrolled_sql_provider() {
         return array(
             array(
@@ -3781,6 +3815,47 @@ class core_accesslib_testcase extends advanced_testcase {
         set_config('profileroles', "");
         $this->setUser($user2);
         $this->assertEquals($expectedteacher, get_profile_roles($coursecontext));
+    }
+
+    /**
+     * Ensure that the get_parent_contexts() function limits the number of queries it performs.
+     */
+    public function test_get_parent_contexts_preload() {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        /*
+         * Given the following data structure:
+         * System
+         * - Category
+         * --- Category
+         * ----- Category
+         * ------- Category
+         * --------- Course
+         * ----------- Activity (Forum)
+         */
+
+        $contexts = [];
+
+        $cat1 = $this->getDataGenerator()->create_category();
+        $cat2 = $this->getDataGenerator()->create_category(['parent' => $cat1->id]);
+        $cat3 = $this->getDataGenerator()->create_category(['parent' => $cat2->id]);
+        $cat4 = $this->getDataGenerator()->create_category(['parent' => $cat3->id]);
+        $course = $this->getDataGenerator()->create_course(['category' => $cat4->id]);
+        $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
+
+        $modcontext = context_module::instance($forum->cmid);
+
+        context_helper::reset_caches();
+
+        // There should only be a single DB query.
+        $predbqueries = $DB->perf_get_reads();
+
+        $parents = $modcontext->get_parent_contexts();
+        // Note: For some databases There is one read, plus one FETCH, plus one CLOSE.
+        // These all show as reads, when there has actually only been a single query.
+        $this->assertLessThanOrEqual(3, $DB->perf_get_reads() - $predbqueries);
     }
 }
 
