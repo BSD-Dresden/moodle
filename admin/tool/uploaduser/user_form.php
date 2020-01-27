@@ -53,14 +53,14 @@ class admin_uploaduser_form1 extends moodleform {
         if (array_key_exists('cfg', $choices)) {
             $mform->setDefault('delimiter_name', 'cfg');
         } else if (get_string('listsep', 'langconfig') == ';') {
-            $mform->setDefault('delimiter_name', 'tab');
+            $mform->setDefault('delimiter_name', 'semicolon');
         } else {
             $mform->setDefault('delimiter_name', 'comma');
         }
 
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
-        $mform->setDefault('encoding', 'ISO-8859-10');
+        $mform->setDefault('encoding', 'UTF-8');
 
         $choices = array('10'=>10, '20'=>20, '100'=>100, '1000'=>1000, '100000'=>100000);
         $mform->addElement('select', 'previewrows', get_string('rowpreviewnum', 'tool_uploaduser'), $choices);
@@ -100,7 +100,7 @@ class admin_uploaduser_form2 extends moodleform {
 
         $choices = array(0 => get_string('infilefield', 'auth'), 1 => get_string('createpasswordifneeded', 'auth'));
         $mform->addElement('select', 'uupasswordnew', get_string('uupasswordnew', 'tool_uploaduser'), $choices);
-        $mform->setDefault('uupasswordnew', 0);
+        $mform->setDefault('uupasswordnew', 1);
         $mform->hideIf('uupasswordnew', 'uutype', 'eq', UU_USER_UPDATE);
 
         $choices = array(UU_UPDATE_NOCHANGES    => get_string('nochanges', 'tool_uploaduser'),
@@ -146,9 +146,9 @@ class admin_uploaduser_form2 extends moodleform {
 
         if (!empty($CFG->allowaccountssameemail)) {
             $mform->addElement('selectyesno', 'uunoemailduplicates', get_string('uunoemailduplicates', 'tool_uploaduser'));
-            $mform->setDefault('uunoemailduplicates', 0);
+            $mform->setDefault('uunoemailduplicates', 1);
         } else {
-            $mform->addElement('hidden', 'uunoemailduplicates', 0);
+            $mform->addElement('hidden', 'uunoemailduplicates', 1);
         }
         $mform->setType('uunoemailduplicates', PARAM_BOOL);
 
