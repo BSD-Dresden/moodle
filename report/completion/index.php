@@ -558,8 +558,10 @@ foreach ($progress as $user) {
         } else {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
         }
-
-        print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
+		
+		//MK 28.05.2020 - don't show link to details 
+        // print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
+		print '<th scope="row">'.fullname($user).'</th>';
         foreach ($extrafields as $field) {
             echo '<td>'.s($user->{$field}).'</td>';
         }
