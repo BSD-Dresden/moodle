@@ -3057,9 +3057,10 @@ class global_navigation extends navigation_node {
         foreach ($courses as $course) {
             $classify = course_classify_for_timeline($course);
 
-            if ($classify == COURSE_TIMELINE_INPROGRESS) {
+			//Bedingung ausgeklammert, da sonst abgeschlossene Kurse nicht angezeigt																							 
+            //if ($classify == COURSE_TIMELINE_INPROGRESS) {
                 $flatnavcourses[$course->id] = $course;
-            }
+            //}
         }
 
         // Get the number of courses that can be displayed in the nav block and in the flatnav.

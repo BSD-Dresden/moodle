@@ -65,6 +65,7 @@ class admin_uploaduser_form1 extends moodleform {
         $choices = array('10'=>10, '20'=>20, '100'=>100, '1000'=>1000, '100000'=>100000);
         $mform->addElement('select', 'previewrows', get_string('rowpreviewnum', 'tool_uploaduser'), $choices);
         $mform->setType('previewrows', PARAM_INT);
+		$mform->setDefault('previewrows', 100);
 
         $this->add_action_buttons(false, get_string('uploadusers', 'tool_uploaduser'));
     }
