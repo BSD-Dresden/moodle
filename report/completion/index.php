@@ -559,9 +559,14 @@ foreach ($progress as $user) {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
         }
 		
-		//MK 28.05.2020 - don't show link to details 
+		//MK 22.07.2020 - only show own link when no permission
         // print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
-		print '<th scope="row">'.fullname($user).'</th>';
+        if (completion_can_view_data($user->id, $course)) {
+            print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
+        } else {
+            print '<th scope="row">'.fullname($user).'</th>';
+        }
+		
         foreach ($extrafields as $field) {
             echo '<td>'.s($user->{$field}).'</td>';
         }
