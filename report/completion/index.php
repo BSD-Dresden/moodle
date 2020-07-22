@@ -559,12 +559,17 @@ foreach ($progress as $user) {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
         }
 		
-		//MK 22.07.2020 - only show own link when no permission
-        // print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
-        if (completion_can_view_data($user->id, $course)) {
+        //MK 22.07.2020 - only show own link when no permission
+        $personalcontext = context_user::instance($USER->id);
+        if (has_capability('moodle/user:viewuseractivitiesreport', $personalcontext)) {
             print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
         } else {
-            print '<th scope="row">'.fullname($user).'</th>';
+            if ($user->id == $USER->id) {
+                print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
+            }
+            else {
+                print '<th scope="row">'.fullname($user).'</th>';
+            }
         }
 		
         foreach ($extrafields as $field) {
