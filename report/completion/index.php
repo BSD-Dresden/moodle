@@ -30,7 +30,7 @@ require_once("{$CFG->libdir}/completionlib.php");
 /**
  * Configuration
  */
-define('COMPLETION_REPORT_PAGE',        25);
+define('COMPLETION_REPORT_PAGE',        100);
 define('COMPLETION_REPORT_COL_TITLES',  true);
 
 /*
