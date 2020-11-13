@@ -291,6 +291,20 @@ if ($total > COMPLETION_REPORT_PAGE) {
 if (!$csv) {
     print '<br class="clearer"/>'; // ugh
 
+    // 13.11.2020 MK Show teacher
+    $personalcontext = context_user::instance($USER->id);
+    if (has_capability('moodle/user:viewuseractivitiesreport', $personalcontext)) {
+        $role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teachers = get_role_users($role->id, $context, false, 'u.id, u.firstname, u.lastname');
+        if ($teachers) {
+        	foreach ($teachers as $staff) {
+                //echo 'Vorgesetzter: ' . $staff->firstname . ' ' . $staff->lastname;
+                $userurl = new moodle_url('/user/view.php', array('id' => $staff->id, 'course' => $course->id));
+                print 'Vorgesetzter: ' . '<a href="'.$userurl->out().'">'.fullname($staff).'</a>';
+	    }        
+        }
+    }
+	
     $total_header = ($total == $grandtotal) ? $total : "{$total}/{$grandtotal}";
     echo $OUTPUT->heading(get_string('allparticipants').": {$total_header}", 3);
 
