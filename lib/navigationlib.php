@@ -3056,9 +3056,10 @@ class global_navigation extends navigation_node {
         // Go through the courses and see which ones we want to display in the flatnav.
         foreach ($courses as $course) {
             $classify = course_classify_for_timeline($course);
-
-			//Bedingung ausgeklammert, da sonst abgeschlossene Kurse nicht angezeigt																							 
-            //if ($classify == COURSE_TIMELINE_INPROGRESS) {
+																										 
+        //TODO: This check hides completed and past courses but we want to hide the course only if its past the end time
+	// -> Find a smarter check and disable this for now
+	//if ($classify == COURSE_TIMELINE_INPROGRESS) {
                 $flatnavcourses[$course->id] = $course;
             //}
         }
