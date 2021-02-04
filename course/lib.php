@@ -60,6 +60,7 @@ define('COURSE_TIMELINE_ALLINCLUDINGHIDDEN', 'allincludinghidden');
 define('COURSE_TIMELINE_ALL', 'all');
 define('COURSE_TIMELINE_PAST', 'past');
 define('COURSE_TIMELINE_INPROGRESS', 'inprogress');
+define('COURSE_TIMELINE_COMPLETED', 'completed');
 define('COURSE_TIMELINE_FUTURE', 'future');
 define('COURSE_FAVOURITES', 'favourites');
 define('COURSE_TIMELINE_HIDDEN', 'hidden');
@@ -4157,7 +4158,7 @@ function course_check_updates($course, $tocheck, $filter = array()) {
  * @param stdClass $course Course record
  * @param stdClass $user User record (optional - defaults to $USER).
  * @param completion_info $completioninfo Completion record for the user (optional - will be fetched if required).
- * @return string (one of COURSE_TIMELINE_FUTURE, COURSE_TIMELINE_INPROGRESS or COURSE_TIMELINE_PAST)
+ * @return string (one of COURSE_TIMELINE_FUTURE, COURSE_TIMELINE_INPROGRESS, COURSE_TIMELINE_COMPLETED or COURSE_TIMELINE_PAST)
  */
 function course_classify_for_timeline($course, $user = null, $completioninfo = null) {
     global $USER;
@@ -4178,7 +4179,7 @@ function course_classify_for_timeline($course, $user = null, $completioninfo = n
 
     // Course was completed.
     if ($completioninfo->is_enabled() && $completioninfo->is_course_complete($user->id)) {
-        return COURSE_TIMELINE_PAST;
+        return COURSE_TIMELINE_COMPLETED;
     }
 
     // Start date not reached.
@@ -4227,6 +4228,7 @@ function course_classify_start_date($course) {
  * [
  *      COURSE_TIMELINE_PAST => [... list of past courses ...],
  *      COURSE_TIMELINE_FUTURE => [],
+ *      COURSE_TIMELINE_COMPLETED => [],
  *      COURSE_TIMELINE_INPROGRESS => []
  * ]
  *
@@ -4242,6 +4244,7 @@ function course_classify_courses_for_timeline(array $courses) {
     }, [
         COURSE_TIMELINE_PAST => [],
         COURSE_TIMELINE_FUTURE => [],
+		COURSE_TIMELINE_COMPLETED => [],
         COURSE_TIMELINE_INPROGRESS => []
     ]);
 }
@@ -4314,9 +4317,9 @@ function course_filter_courses_by_timeline_classification(
 
     if (!in_array($classification,
             [COURSE_TIMELINE_ALLINCLUDINGHIDDEN, COURSE_TIMELINE_ALL, COURSE_TIMELINE_PAST, COURSE_TIMELINE_INPROGRESS,
-                COURSE_TIMELINE_FUTURE, COURSE_TIMELINE_HIDDEN])) {
+                COURSE_TIMELINE_COMPLETED, COURSE_TIMELINE_FUTURE, COURSE_TIMELINE_HIDDEN])) {
         $message = 'Classification must be one of COURSE_TIMELINE_ALLINCLUDINGHIDDEN, COURSE_TIMELINE_ALL, COURSE_TIMELINE_PAST, '
-            . 'COURSE_TIMELINE_INPROGRESS or COURSE_TIMELINE_FUTURE';
+            . 'COURSE_TIMELINE_INPROGRESS, COURSE_TIMELINE_COMPLETED or COURSE_TIMELINE_FUTURE';
         throw new moodle_exception($message);
     }
 

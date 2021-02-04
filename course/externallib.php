@@ -3782,6 +3782,8 @@ class core_course_external extends external_api {
                 break;
             case COURSE_TIMELINE_INPROGRESS:
                 break;
+			case COURSE_TIMELINE_COMPLETED:
+                break;
             case COURSE_TIMELINE_FUTURE:
                 break;
             case COURSE_FAVOURITES:

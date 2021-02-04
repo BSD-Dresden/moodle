@@ -3057,11 +3057,9 @@ class global_navigation extends navigation_node {
         foreach ($courses as $course) {
             $classify = course_classify_for_timeline($course);
 																										 
-        //TODO: This check hides completed and past courses but we want to hide the course only if its past the end time
-	// -> Find a smarter check and disable this for now
-	//if ($classify == COURSE_TIMELINE_INPROGRESS) {
+            if ($classify == COURSE_TIMELINE_INPROGRESS || $classify == COURSE_TIMELINE_COMPLETED) {
                 $flatnavcourses[$course->id] = $course;
-            //}
+            }
         }
 
         // Get the number of courses that can be displayed in the nav block and in the flatnav.
