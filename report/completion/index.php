@@ -297,14 +297,20 @@ if (!$csv) {
         $role = $DB->get_record('role', array('shortname' => 'teacher'));
         $teachers = get_role_users($role->id, $context, false, 'u.id, u.firstname, u.lastname');
         if ($teachers) {
-        	foreach ($teachers as $staff) {
+            foreach ($teachers as $staff) {
                 //echo 'Vorgesetzter: ' . $staff->firstname . ' ' . $staff->lastname;
                 $userurl = new moodle_url('/user/view.php', array('id' => $staff->id, 'course' => $course->id));
-                print 'Vorgesetzter: ' . '<a href="'.$userurl->out().'">'.fullname($staff).'</a>';
-	    }        
+                print '<div>Vorgesetzter: ' . '<a href="'.$userurl->out().'">'.fullname($staff).'</a></div>';
+            }
+        }
+        // 17.03.2021 MK Show End Date
+        $enddate = $DB->get_field('course', 'enddate', array('id' => $course->id));
+        if ($enddate) {
+            print '<div>Kursende: ' . userdate($enddate, get_string('strftimedaydate', 'core_langconfig')) . '</div>';
         }
     }
-	
+
+
     $total_header = ($total == $grandtotal) ? $total : "{$total}/{$grandtotal}";
     echo $OUTPUT->heading(get_string('allparticipants').": {$total_header}", 3);
 
