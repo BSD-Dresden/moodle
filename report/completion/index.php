@@ -310,7 +310,6 @@ if (!$csv) {
         }
     }
 
-
     $total_header = ($total == $grandtotal) ? $total : "{$total}/{$grandtotal}";
     echo $OUTPUT->heading(get_string('allparticipants').": {$total_header}", 3);
 
@@ -571,14 +570,22 @@ foreach ($progress as $user) {
             $row[] = $user->{$field};
         }
     } else {
-        print PHP_EOL.'<tr id="user-'.$user->id.'">';
+        // MK 17.03.2021 Add additional class to users who have not completed the course for CSS styling
+        $cinfo = new completion_info($course);
+        $iscomplete = $cinfo->is_course_complete($user->id);        
+        if ($iscomplete) {
+            print PHP_EOL.'<tr id="user-'.$user->id.'" >';
+        }
+        else {
+            print PHP_EOL.'<tr id="user-'.$user->id.'" class="incomplete">';
+        }
 
         if (completion_can_view_data($user->id, $course)) {
             $userurl = new moodle_url('/blocks/completionstatus/details.php', array('course' => $course->id, 'user' => $user->id));
         } else {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
         }
-		
+
         //MK 22.07.2020 - only show own link when no permission
         $personalcontext = context_user::instance($USER->id);
         if (has_capability('moodle/user:viewuseractivitiesreport', $personalcontext)) {
@@ -591,7 +598,7 @@ foreach ($progress as $user) {
                 print '<th scope="row">'.fullname($user).'</th>';
             }
         }
-		
+
         foreach ($extrafields as $field) {
             echo '<td>'.s($user->{$field}).'</td>';
         }
