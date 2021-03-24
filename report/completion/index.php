@@ -574,10 +574,16 @@ foreach ($progress as $user) {
         $cinfo = new completion_info($course);
         $iscomplete = $cinfo->is_course_complete($user->id);        
         if ($iscomplete) {
-            print PHP_EOL.'<tr id="user-'.$user->id.'" >';
+            print PHP_EOL.'<tr id="user-'.$user->id.'" class="complete">';
         }
         else {
-            print PHP_EOL.'<tr id="user-'.$user->id.'" class="incomplete">';
+            $first_criteria_completion = $completion->get_user_completion($user->id, $criteria[0]);
+            $is_first_complete = $first_criteria_completion->is_complete();
+            if ($is_first_complete) {
+                print PHP_EOL.'<tr id="user-'.$user->id.'" class="inprogress">';
+            } else {
+                print PHP_EOL.'<tr id="user-'.$user->id.'" class="notstarted">';
+            }
         }
 
         if (completion_can_view_data($user->id, $course)) {
