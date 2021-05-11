@@ -565,7 +565,7 @@ foreach ($progress as $user) {
     if ($csv) {
         $row = array();
         $row[] = $user->id;
-        $row[] = fullname($user);
+        $row[] = fullname($user, has_capability('moodle/site:viewfullnames', $context));
         foreach ($extrafields as $field) {
             $row[] = $user->{$field};
         }
@@ -598,10 +598,11 @@ foreach ($progress as $user) {
             print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
         } else {
             if ($user->id == $USER->id) {
-                print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
+                print '<th scope="row"><a href="'.$userurl->out().'">'.
+                    fullname($user, has_capability('moodle/site:viewfullnames', $context)) . '</a></th>';
             }
             else {
-                print '<th scope="row">'.fullname($user).'</th>';
+                print '<th scope="row">' . fullname($user, has_capability('moodle/site:viewfullnames', $context)) . '</th>';
             }
         }
 
