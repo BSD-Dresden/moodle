@@ -532,6 +532,7 @@ if (!$csv) {
     foreach ($extrafields as $field) {
        $row[] = get_user_field_name($field);
     }
+    $row[] = 'Gruppe';
 
     // Add activity headers
     foreach ($criteria as $criterion) {
@@ -569,6 +570,12 @@ foreach ($progress as $user) {
         foreach ($extrafields as $field) {
             $row[] = $user->{$field};
         }
+        $groupings = groups_get_user_groups($courseid, $user->id);
+        $usergroups = array();
+        foreach ($groupings[0] as $usergroupid) {
+             $usergroups[] = groups_get_group_name($usergroupid);
+        }
+        $row[] = implode(", ",$usergroups);
     } else {
         // MK 17.03.2021 Add additional class to users who have not completed the course for CSS styling
         $cinfo = new completion_info($course);
