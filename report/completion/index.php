@@ -741,7 +741,7 @@ foreach ($progress as $user) {
     $a = new StdClass;
 
     if ($ccompletion->is_complete()) {
-        $a->date = userdate($ccompletion->timecompleted, get_string('strftimedatetimeshort', 'langconfig'));
+        $a->date = userdate($ccompletion->timecompleted, get_string('strftimedatefullshort', 'langconfig'));
     } else {
         $a->date = '';
     }
