@@ -266,6 +266,12 @@
         echo html_writer::end_tag('form');
     }
 
+    // 01.02.2022 MK Show End Date
+    $enddate = $DB->get_field('course', 'enddate', array('id' => $course->id));
+    if ($enddate) {
+        print '<div style="float: right;">' . get_string('enddate') . ': ' . userdate($enddate, get_string('strftimedaydate', 'core_langconfig')) . '</div>';
+    }
+
     // Course wrapper start.
     echo html_writer::start_tag('div', array('class'=>'course-content'));
 
