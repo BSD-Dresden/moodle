@@ -49,6 +49,16 @@ class moodle_phpmailer extends \PHPMailer\PHPMailer\PHPMailer {
         global $CFG;
         $this->Version   = 'Moodle '.$CFG->version;         // mailer version
         $this->CharSet   = 'UTF-8';
+        
+        // MK: Disable strict cert validation as a workaround for our messy mail server config
+        $this->SMTPOptions = array(
+          'ssl' => array(
+          'verify_peer' => false,
+          'verify_peer_name' => false,
+          'allow_self_signed' => true
+          )
+        );
+        
         // MDL-52637: Disable the automatic TLS encryption added in v5.2.10 (9da56fc1328a72aa124b35b738966315c41ef5c6).
         $this->SMTPAutoTLS = false;
 
