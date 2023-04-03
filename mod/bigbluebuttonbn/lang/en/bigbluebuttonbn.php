@@ -513,6 +513,7 @@ $string['view_message_conference_not_started'] = 'The session has not started ye
 $string['view_message_conference_wait_for_moderator'] = 'Waiting for a moderator to join.';
 $string['view_message_conference_in_progress'] = 'The session is in progress.';
 $string['view_message_conference_has_ended'] = 'The session has ended.';
+$string['view_message_conference_user_limit_reached'] = 'The number of users allowed in a session has been reached';
 $string['view_message_tab_close'] = 'This tab/window must be closed manually';
 $string['view_message_recordings_disabled'] = 'Recordings are disabled on the server. BigBlueButton activities of type \'Recordings only\' cannot be used.';
 $string['view_message_cron_disabled'] = 'The list of recordings may not be up to date. Please contact the site administrator with the following information: {$a}';
@@ -643,6 +644,7 @@ $string['cachedef_serverinfo'] = 'Remote server information';
 $string['cachedef_recordings'] = 'Recording metadata';
 $string['cachedef_validatedurls'] = 'Cache of validated URL checks';
 $string['taskname:check_pending_recordings'] = 'Fetch pending recordings';
+$string['taskname:check_dismissed_recordings'] = 'Check for recordings that haven\'t been found yet';
 $string['userlimitreached'] = 'The number of users allowed in a session has been reached.';
 $string['waitformoderator'] = 'Waiting for a moderator to join.';
 
