@@ -47,7 +47,6 @@ class moodle_phpmailer extends \PHPMailer\PHPMailer\PHPMailer {
      */
     public function __construct(){
         global $CFG;
-        $this->Version   = 'Moodle '.$CFG->version;         // mailer version
         $this->CharSet   = 'UTF-8';
         
         // MK: Disable strict cert validation as a workaround for our messy mail server config
