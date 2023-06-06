@@ -50,13 +50,14 @@ class admin_uploaduser_form1 extends moodleform {
 
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
-        if (array_key_exists('cfg', $choices)) {
-            $mform->setDefault('delimiter_name', 'cfg');
-        } else if (get_string('listsep', 'langconfig') == ';') {
-            $mform->setDefault('delimiter_name', 'tab');
-        } else {
-            $mform->setDefault('delimiter_name', 'comma');
-        }
+        // if (array_key_exists('cfg', $choices)) {
+            // $mform->setDefault('delimiter_name', 'cfg');
+        // } else if (get_string('listsep', 'langconfig') == ';') {
+            // $mform->setDefault('delimiter_name', 'tab');
+        // } else {
+            // $mform->setDefault('delimiter_name', 'comma');
+        // }
+        $mform->setDefault('delimiter_name', 'semicolon');
 
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
