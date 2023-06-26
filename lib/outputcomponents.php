@@ -1116,6 +1116,9 @@ class single_select implements renderable, templatable {
      */
     var $helpicon = null;
 
+    /** @var component_action[] component action. */
+    public $actions = [];
+
     /**
      * Constructor
      * @param moodle_url $url form action target, includes hidden fields
@@ -2866,6 +2869,9 @@ class html_table {
     /** @var bool Whether to make the table to be scrolled horizontally with ease. Make table responsive across all viewports. */
     public $responsive = true;
 
+    /** @var string class name to add to this html table. */
+    public $class;
+
     /**
      * Constructor
      */
@@ -3605,7 +3611,10 @@ class custom_menu_item implements renderable, templatable {
      */
     public function __construct($text, moodle_url $url = null, $title = null, $sort = null, custom_menu_item $parent = null,
         array $attributes = []) {
-        $this->text = $text;
+
+        // Use class setter method for text to ensure it's always a string type.
+        $this->set_text($text);
+
         $this->url = $url;
         $this->title = $title;
         $this->sort = (int)$sort;
@@ -3878,7 +3887,7 @@ class custom_menu extends custom_menu_item {
             $settings = explode('|', $line);
             foreach ($settings as $i => $setting) {
                 $setting = trim($setting);
-                if (!empty($setting)) {
+                if ($setting !== '') {
                     switch ($i) {
                         case 0: // Menu text.
                             $itemtext = ltrim($setting, '-');
