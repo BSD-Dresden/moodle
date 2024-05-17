@@ -1830,7 +1830,15 @@ class html_writer {
     public static function img($src, $alt, array $attributes = null) {
         $attributes = (array)$attributes;
         $attributes['src'] = $src;
-        $attributes['alt'] = $alt;
+        // In case a null alt text is provided, set it to an empty string.
+        $attributes['alt'] = $alt ?? '';
+        if (array_key_exists('role', $attributes) && core_text::strtolower($attributes['role']) === 'presentation') {
+            // A presentation role is not necessary for the img tag.
+            // If a non-empty alt text is provided, the presentation role will conflict with the alt text.
+            // An empty alt text denotes a decorative image. The presence of a presentation role is redundant.
+            unset($attributes['role']);
+            debugging('The presentation role is not necessary for an img tag.', DEBUG_DEVELOPER);
+        }
 
         return self::empty_tag('img', $attributes);
     }
@@ -5191,7 +5199,7 @@ class progress_bar implements renderable, templatable {
         $this->percent = $percent;
         $this->lastupdate = microtime(true);
 
-        echo $OUTPUT->render_progress_bar_update($this->html_id, sprintf("%.1f", $this->percent), $msg, $estimatemsg);
+        echo $OUTPUT->render_progress_bar_update($this->html_id, $this->percent, $msg, $estimatemsg);
         flush();
     }
 

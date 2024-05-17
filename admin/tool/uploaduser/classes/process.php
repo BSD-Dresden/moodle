@@ -688,6 +688,17 @@ class process {
                 break;
 
             case UU_USER_ADD_UPDATE:
+                if ($this->get_match_on_email()) {
+                    if ($usersbyname = $DB->get_records('user', ['username' => $user->username])) {
+                        foreach ($usersbyname as $userbyname) {
+                            if (strtolower($userbyname->email) != strtolower($user->email)) {
+                                $this->usersskipped++;
+                                $this->upt->track('status', get_string('usernotaddedusernameexists', 'error'), 'warning');
+                                $skip = true;
+                            }
+                        }
+                    }
+                }
                 break;
 
             case UU_USER_UPDATE:
@@ -1384,8 +1395,14 @@ class process {
                 }
             }
         }
+
+        // Warn user about invalid data values.
         if (($invalid = \core_user::validate($user)) !== true) {
-            $this->upt->track('status', get_string('invaliduserdata', 'tool_uploaduser', s($user->username)), 'warning');
+            $listseparator = get_string('listsep', 'langconfig') . ' ';
+            $this->upt->track('status', get_string('invaliduserdatavalues', 'tool_uploaduser', [
+                'username' => s($user->username),
+                'values' => implode($listseparator, array_keys($invalid)),
+            ]), 'warning');
         }
     }
 
