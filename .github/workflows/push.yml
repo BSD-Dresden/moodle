@@ -3,7 +3,7 @@ name: Core
 on:
   push:
     branches-ignore:
-      - master
+      - main
       - MOODLE_[0-9]+_STABLE
       - MOODLE_[0-9]+_STABLE_BSD
     tags-ignore:
