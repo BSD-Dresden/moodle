@@ -32,7 +32,7 @@ require_once("{$CFG->libdir}/completionlib.php");
 /**
  * Configuration
  */
-define('COMPLETION_REPORT_PAGE',        100);
+define('COMPLETION_REPORT_PAGE',        25);
 define('COMPLETION_REPORT_COL_TITLES',  true);
 
 /*
@@ -296,25 +296,6 @@ if ($total > COMPLETION_REPORT_PAGE) {
 if (!$csv) {
     print '<br class="clearer"/>'; // ugh
 
-    // 13.11.2020 MK Show teacher
-    $personalcontext = context_user::instance($USER->id);
-    if (has_capability('moodle/user:viewuseractivitiesreport', $personalcontext)) {
-        $role = $DB->get_record('role', array('shortname' => 'teacher'));
-        $teachers = get_role_users($role->id, $context, false, 'u.id, u.firstname, u.lastname');
-        if ($teachers) {
-            foreach ($teachers as $staff) {
-                //echo 'Vorgesetzter: ' . $staff->firstname . ' ' . $staff->lastname;
-                $userurl = new moodle_url('/user/view.php', array('id' => $staff->id, 'course' => $course->id));
-                print '<div>Vorgesetzter: ' . '<a href="'.$userurl->out().'">'.fullname($staff).'</a></div>';
-            }
-        }
-        // 17.03.2021 MK Show End Date
-        $enddate = $DB->get_field('course', 'enddate', array('id' => $course->id));
-        if ($enddate) {
-            print '<div>Kursende: ' . userdate($enddate, get_string('strftimedaydate', 'core_langconfig')) . '</div>';
-        }
-    }
-
     $total_header = ($total == $grandtotal) ? $total : "{$total}/{$grandtotal}";
     echo $OUTPUT->heading(get_string('allparticipants').": {$total_header}", 3);
 
@@ -537,7 +518,6 @@ if (!$csv) {
     foreach ($extrafields as $field) {
         $row[] = \core_user\fields::get_display_name($field);
     }
-    $row[] = 'Gruppe';
 
     // Add activity headers
     foreach ($criteria as $criterion) {
@@ -575,28 +555,8 @@ foreach ($progress as $user) {
         foreach ($extrafields as $field) {
             $row[] = $user->{$field};
         }
-        $groupings = groups_get_user_groups($courseid, $user->id);
-        $usergroups = array();
-        foreach ($groupings[0] as $usergroupid) {
-             $usergroups[] = groups_get_group_name($usergroupid);
-        }
-        $row[] = implode(", ",$usergroups);
     } else {
-        // MK 17.03.2021 Add additional class to users who have not completed the course for CSS styling
-        $cinfo = new completion_info($course);
-        $iscomplete = $cinfo->is_course_complete($user->id);        
-        if ($iscomplete) {
-            print PHP_EOL.'<tr id="user-'.$user->id.'" class="complete">';
-        }
-        else {
-            $first_criteria_completion = $completion->get_user_completion($user->id, $criteria[0]);
-            $is_first_complete = $first_criteria_completion->is_complete();
-            if ($is_first_complete) {
-                print PHP_EOL.'<tr id="user-'.$user->id.'" class="inprogress">';
-            } else {
-                print PHP_EOL.'<tr id="user-'.$user->id.'" class="notstarted">';
-            }
-        }
+        print PHP_EOL.'<tr id="user-'.$user->id.'">';
 
         if (completion_can_view_data($user->id, $course)) {
             $userurl = new moodle_url('/blocks/completionstatus/details.php', array('course' => $course->id, 'user' => $user->id));
@@ -604,20 +564,8 @@ foreach ($progress as $user) {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
         }
 
-        //MK 22.07.2020 - only show own link when no permission
-        $personalcontext = context_user::instance($USER->id);
-        if (has_capability('moodle/user:viewuseractivitiesreport', $personalcontext)) {
-            print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
-        } else {
-            if ($user->id == $USER->id) {
-                print '<th scope="row"><a href="'.$userurl->out().'">'.
-                    fullname($user, has_capability('moodle/site:viewfullnames', $context)) . '</a></th>';
-            }
-            else {
-                print '<th scope="row">' . fullname($user, has_capability('moodle/site:viewfullnames', $context)) . '</th>';
-            }
-        }
-
+        print '<th scope="row"><a href="' . $userurl->out() . '">' .
+            fullname($user, has_capability('moodle/site:viewfullnames', $context)) . '</a></th>';
         foreach ($extrafields as $field) {
             echo '<td>'.s($user->{$field}).'</td>';
         }
@@ -746,7 +694,7 @@ foreach ($progress as $user) {
     $a = new StdClass;
 
     if ($ccompletion->is_complete()) {
-        $a->date = userdate($ccompletion->timecompleted, get_string('strftimedatefullshort', 'langconfig'));
+        $a->date = userdate($ccompletion->timecompleted, get_string('strftimedatetimeshort', 'langconfig'));
     } else {
         $a->date = '';
     }
