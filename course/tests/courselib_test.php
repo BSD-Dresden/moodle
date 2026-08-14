@@ -4199,7 +4199,7 @@ final class courselib_test extends advanced_testcase {
         // Aggregate the completions.
         $this->assertEquals(COURSE_TIMELINE_PAST, course_classify_for_timeline($pastcourse));
         $this->assertEquals(COURSE_TIMELINE_FUTURE, course_classify_for_timeline($futurecourse));
-        $this->assertEquals(COURSE_TIMELINE_PAST, course_classify_for_timeline($completedcourse));
+        $this->assertEquals(COURSE_TIMELINE_COMPLETED, course_classify_for_timeline($completedcourse));
         $this->assertEquals(COURSE_TIMELINE_INPROGRESS, course_classify_for_timeline($inprogresscourse));
 
         // Test grace period.
@@ -4207,7 +4207,7 @@ final class courselib_test extends advanced_testcase {
         set_config('coursegraceperiodbefore', 1);
         $this->assertEquals(COURSE_TIMELINE_INPROGRESS, course_classify_for_timeline($pastcourse));
         $this->assertEquals(COURSE_TIMELINE_INPROGRESS, course_classify_for_timeline($futurecourse));
-        $this->assertEquals(COURSE_TIMELINE_PAST, course_classify_for_timeline($completedcourse));
+        $this->assertEquals(COURSE_TIMELINE_COMPLETED, course_classify_for_timeline($completedcourse));
         $this->assertEquals(COURSE_TIMELINE_INPROGRESS, course_classify_for_timeline($inprogresscourse));
     }
 

@@ -569,8 +569,24 @@ foreach ($progress as $user) {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
         }
 
-        print '<th scope="row"><a href="' . $userurl->out() . '">' .
-            fullname($user, has_capability('moodle/site:viewfullnames', $context)) . '</a></th>';
+        // BSD: no link from a participant name into that participant's profile.
+        // We do not use this report ourselves, but an organiser on the customer
+        // side can end up here, and should see how their people are getting on
+        // without being handed a way into their profiles. Their own name stays
+        // linked. The capability is checked in the viewer's own user context on
+        // purpose: administrators and managers hold it there, a role assigned
+        // inside a single course does not.
+        $bsdmaylinkprofiles = has_capability(
+            'moodle/user:viewuseractivitiesreport',
+            context_user::instance($USER->id)
+        );
+        $bsdusername = fullname($user, has_capability('moodle/site:viewfullnames', $context));
+
+        if ($bsdmaylinkprofiles || $user->id == $USER->id) {
+            print '<th scope="row"><a href="' . $userurl->out() . '">' . $bsdusername . '</a></th>';
+        } else {
+            print '<th scope="row">' . $bsdusername . '</th>';
+        }
         foreach ($extrafields as $field) {
             echo '<td>'.s($user->{$field}).'</td>';
         }

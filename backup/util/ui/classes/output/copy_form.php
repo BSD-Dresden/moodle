@@ -123,15 +123,21 @@ class copy_form extends \moodleform {
         }
 
         // Course start date.
+        // BSD: upstream suggests tomorrow. A copied course is normally set up on
+        // the day it starts, so today is the better guess.
         $mform->addElement('date_time_selector', 'startdate', get_string('startdate'));
         $mform->addHelpButton('startdate', 'startdate');
         $date = (new \DateTime())->setTimestamp(usergetmidnight(time()));
-        $date->modify('+1 day');
         $mform->setDefault('startdate', $date->getTimestamp());
 
         // Course enddate.
-        $mform->addElement('date_time_selector', 'enddate', get_string('enddate'), array('optional' => true));
+        // BSD: mandatory instead of optional, two months out by default. Every
+        // course we run has an end, and both the completion overview and the
+        // colouring in local_coursesoverview are useless without one.
+        $mform->addElement('date_time_selector', 'enddate', get_string('enddate'));
         $mform->addHelpButton('enddate', 'enddate');
+        $date->modify('+2 months 23 hours 59 minutes');
+        $mform->setDefault('enddate', $date->getTimestamp());
 
         if (!empty($CFG->enablecourserelativedates)) {
             $attributes = [

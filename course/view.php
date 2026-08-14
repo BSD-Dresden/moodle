@@ -324,6 +324,14 @@ if ($PAGE->user_is_editing()) {
     $containerattributes['data-courseindexdndallowed'] = 'true';
 }
 
+// BSD: show the course end date at the top right of the course page, so that
+// participants and organisers can see how long they have without opening the
+// course settings. $course is loaded with '*' above, so no extra query.
+if (!empty($course->enddate)) {
+    print '<div style="float: right;">' . get_string('enddate') . ': ' .
+        userdate($course->enddate, get_string('strftimedaydate', 'core_langconfig')) . '</div>';
+}
+
 // Course wrapper start.
 echo html_writer::start_tag('div', $containerattributes);
 
