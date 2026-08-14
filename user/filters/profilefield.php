@@ -65,8 +65,7 @@ class user_filter_profilefield extends user_filter_type {
                      4 => get_string('endswith', 'filters'),
                      5 => get_string('isempty', 'filters'),
                      6 => get_string('isnotdefined', 'filters'),
-                     7 => get_string('isdefined', 'filters'),
-					 8 => 'isnotempty');
+                     7 => get_string('isdefined', 'filters'));
     }
 
     /**
@@ -198,9 +197,6 @@ class user_filter_profilefield extends user_filter_type {
                 $op = " NOT IN ";
                 break;
             case 7: // Is defined.
-                break;
-			case 8: // Not Empty.
-                $where = "data <> ''";                
                 break;
         }
         if ($profile) {
